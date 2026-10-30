@@ -1,0 +1,20 @@
+name: Build native iPad prototype
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+jobs:
+  validate:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install XcodeGen
+        run: brew install xcodegen
+      - name: Generate Xcode project
+        run: xcodegen generate
+      - name: Build for iPad Simulator (no signing required)
+        run: |
+          xcodebuild -project SRTAudioDashboard.xcodeproj \
+            -scheme SRTAudioDashboard -configuration Debug \
+            -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' \
+            CODE_SIGNING_ALLOWED=NO build
